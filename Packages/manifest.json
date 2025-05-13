@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "com.unity.textmeshpro": "3.0.9",
+    "com.unity.xr-content.xr-sim-environments": "file:../ContentPackages\\com.unity.xr-content.xr-sim-environments-1.0.0.tgz",
     "com.unity.xr.arcore": "5.1.6",
     "com.unity.xr.arfoundation": "5.1.6",
     "com.unity.modules.ai": "1.0.0",
