@@ -1,12 +1,19 @@
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
 
 public class GameManagerAR : MonoBehaviour
 {
+    public static GameManagerAR Instance;
+
     public ARPlaneManager planeManager;
-    public Text infoText; // UI para mostrar planos detectados
+    public TextMeshProUGUI infoText;
+    public TextMeshProUGUI gemasText;
+    public Button botonCrear;
+    public GameObject gemaPrefab;
 
     private int planosHorizontalesObjetivo;
     private int planosVerticalesObjetivo;
@@ -14,41 +21,87 @@ public class GameManagerAR : MonoBehaviour
     private int planosHorizontalesDetectados = 0;
     private int planosVerticalesDetectados = 0;
 
-    private bool juegoListo = false;
+    private int gemasTotales = 0;
+    private int gemasRecogidas = 0;
+
+    private bool gemasInstanciadas = false;
 
     void Start()
     {
-        // Leer datos desde PlayerPrefs
+        Instance = this;
+
         planosHorizontalesObjetivo = PlayerPrefs.GetInt("Horizontal", 0);
         planosVerticalesObjetivo = PlayerPrefs.GetInt("Vertical", 0);
 
-        infoText.text = $"Buscando planos...\nHorizontales: 0 / {planosHorizontalesObjetivo}\nVerticales: 0 / {planosVerticalesObjetivo}";
+        botonCrear.interactable = false;
+        botonCrear.onClick.AddListener(InstanciarGemas);
+
+        ActualizarTextoGemas();
     }
 
     void Update()
     {
-        if (juegoListo) return;
-
         planosHorizontalesDetectados = 0;
         planosVerticalesDetectados = 0;
 
         foreach (ARPlane plano in planeManager.trackables)
         {
-            if (plano.alignment == UnityEngine.XR.ARSubsystems.PlaneAlignment.HorizontalUp)
+            if (plano.alignment == PlaneAlignment.HorizontalUp)
                 planosHorizontalesDetectados++;
-            else if (plano.alignment == UnityEngine.XR.ARSubsystems.PlaneAlignment.Vertical)
+            else if (plano.alignment == PlaneAlignment.Vertical)
                 planosVerticalesDetectados++;
         }
 
-        infoText.text = $"Buscando planos...\nHorizontales: {planosHorizontalesDetectados} / {planosHorizontalesObjetivo}\nVerticales: {planosVerticalesDetectados} / {planosVerticalesObjetivo}";
+        infoText.text = $"ENCUENTRA PLANOS\n" +
+                        $"VERTICALES: {planosVerticalesDetectados} / {planosVerticalesObjetivo}\n" +
+                        $"HORIZONTALES: {planosHorizontalesDetectados} / {planosHorizontalesObjetivo}";
 
-        if (planosHorizontalesDetectados >= planosHorizontalesObjetivo &&
-            planosVerticalesDetectados >= planosVerticalesObjetivo)
+        bool requisitosCumplidos = planosHorizontalesDetectados >= planosHorizontalesObjetivo &&
+                                   planosVerticalesDetectados >= planosVerticalesObjetivo;
+
+        botonCrear.interactable = requisitosCumplidos && !gemasInstanciadas;
+    }
+
+    void InstanciarGemas()
+    {
+        if (gemasInstanciadas) return;
+
+        gemasTotales = planosHorizontalesObjetivo + planosVerticalesObjetivo;
+        int colocadas = 0;
+
+        foreach (ARPlane plano in planeManager.trackables)
         {
-            juegoListo = true;
-            infoText.text = "¡Planos detectados! Puedes comenzar a colocar las gemas.";
-            // Aquí puedes activar el botón de “Colocar gemas” o pasar directamente a instanciar
+            if (colocadas >= gemasTotales)
+                break;
+
+            Vector3 posicion = plano.center + Vector3.up * 0.05f;
+
+            GameObject nuevaGema = Instantiate(gemaPrefab, posicion, Quaternion.identity);
+            nuevaGema.AddComponent<Gema>(); // Añade el script de recolección
+            colocadas++;
         }
+
+        infoText.text = "¡GEMAS COLOCADAS!";
+        ActualizarTextoGemas();
+        gemasInstanciadas = true;
+        botonCrear.interactable = false;
+    }
+
+    public void RecogerGema(GameObject gema)
+    {
+        Destroy(gema);
+        gemasRecogidas++;
+        ActualizarTextoGemas();
+
+        if (gemasRecogidas >= gemasTotales)
+        {
+            infoText.text = "¡Has encontrado todas las gemas!";
+        }
+    }
+
+    void ActualizarTextoGemas()
+    {
+        gemasText.text = $"Gemas encontradas: {gemasRecogidas} / {gemasTotales}";
     }
 }
 
