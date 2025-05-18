@@ -733,7 +733,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 599864150}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2123638955}
+        m_TargetAssemblyTypeName: VolverAlMenu, Assembly-CSharp
+        m_MethodName: Volver
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &599864150
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1617,7 +1629,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1307701042
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2661,6 +2673,7 @@ MonoBehaviour:
   botonCrear: {fileID: 1737994441}
   panelDeteccion: {fileID: 969350726}
   panelJuego: {fileID: 1601673840}
+  panelVictoria: {fileID: 1307701041}
   gemaPrefab: {fileID: 8895884172796637269, guid: 462bb64339ecbf141835a86fbcf5f8e1, type: 3}
 --- !u!4 &2123638954
 Transform:
