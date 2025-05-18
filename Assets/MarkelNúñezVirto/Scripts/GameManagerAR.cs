@@ -3,16 +3,23 @@ using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using TMPro;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class GameManagerAR : MonoBehaviour
 {
     public static GameManagerAR Instance;
 
+    [Header("AR")]
     public ARPlaneManager planeManager;
+
+    [Header("UI")]
     public TextMeshProUGUI infoText;
     public TextMeshProUGUI gemasText;
     public Button botonCrear;
+    public GameObject panelDeteccion;
+    public GameObject panelJuego;
+    public GameObject panelVictoria;
+
+    [Header("Prefab")]
     public GameObject gemaPrefab;
 
     private int planosHorizontalesObjetivo;
@@ -36,6 +43,8 @@ public class GameManagerAR : MonoBehaviour
         botonCrear.interactable = false;
         botonCrear.onClick.AddListener(InstanciarGemas);
 
+        panelJuego.SetActive(false);
+        panelVictoria.SetActive(false);
         ActualizarTextoGemas();
     }
 
@@ -77,12 +86,16 @@ public class GameManagerAR : MonoBehaviour
             Vector3 posicion = plano.center + Vector3.up * 0.05f;
 
             GameObject nuevaGema = Instantiate(gemaPrefab, posicion, Quaternion.identity);
-            nuevaGema.AddComponent<Gema>(); // Añade el script de recolección
+            nuevaGema.AddComponent<Gema>(); // Asigna el script de recogida
             colocadas++;
         }
 
         infoText.text = "¡GEMAS COLOCADAS!";
         ActualizarTextoGemas();
+
+        panelDeteccion.SetActive(false);
+        panelJuego.SetActive(true);
+
         gemasInstanciadas = true;
         botonCrear.interactable = false;
     }
@@ -96,6 +109,7 @@ public class GameManagerAR : MonoBehaviour
         if (gemasRecogidas >= gemasTotales)
         {
             infoText.text = "¡Has encontrado todas las gemas!";
+            panelVictoria.SetActive(true); // Mostrar mensaje final
         }
     }
 
@@ -104,4 +118,3 @@ public class GameManagerAR : MonoBehaviour
         gemasText.text = $"Gemas encontradas: {gemasRecogidas} / {gemasTotales}";
     }
 }
-
