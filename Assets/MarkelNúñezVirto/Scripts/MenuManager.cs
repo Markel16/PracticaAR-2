@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro;  // Importante para usar TextMeshProUGUI
+using TMPro;  
 
 public class MenuManager : MonoBehaviour
 {
@@ -49,7 +49,7 @@ public class MenuManager : MonoBehaviour
         PlayerPrefs.SetInt("Horizontal", Mathf.RoundToInt(horizontalSlider.value));
         PlayerPrefs.SetInt("Oclusion", oclusionToggle.isOn ? 1 : 0);
 
-        SceneManager.LoadScene("JuegoAR"); // Asegúrate de tener esta escena en el Build Settings
+        SceneManager.LoadScene("Scene2"); 
     }
 }
 
